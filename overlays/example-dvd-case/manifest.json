@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "example-dvd-case",
+  "displayName": "Example: DVD Case",
+  "author": "FoliCon",
+  "description": "Sample overlay demonstrating a DVD case frame. Use as a starting point for your own overlays.",
+  "overlayVersion": "1.0.0",
+  "tags": ["example", "template", "dvd"],
+  "previewImage": "preview.png",
+  "assets": ["overlay.json", "base.png", "front.png", "preview.png"],
+  "sha256": {
+    "overlay.json": "8a05d2ae6c86aeefaee22348f47d02280ac58da42e2326cef70d2ac4a6c3293e",
+    "base.png": "d2b7c312ed8cffd6a2fd8f99ecf83032096a9974dfdb8245be544b431014d571",
+    "front.png": "0cc55dbd2903e0654614e3ec6b552e986986ed07866f3fed81ac55dc998a4ff0",
+    "preview.png": "fc917faf9b8ec3854bf9f87e13b5b2edbe75ec34938fb219f599cc1f886f3b8e"
+  },
+  "sizeBytes": 123136,
+  "createdAt": "2026-07-19T00:00:00Z",
+  "updatedAt": "2026-07-19T00:00:00Z"
+}

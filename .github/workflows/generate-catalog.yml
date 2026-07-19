@@ -1,0 +1,77 @@
+name: Generate Catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'overlays/**'
+
+jobs:
+  generate-catalog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate catalog.json
+        run: |
+          echo "Generating catalog from overlay manifests..."
+          python3 - <<'PYEOF'
+          import json, os, glob
+          from datetime import datetime, timezone
+
+          overlays = []
+          for manifest_path in sorted(glob.glob("overlays/*/manifest.json")):
+              with open(manifest_path) as f:
+                  manifest = json.load(f)
+
+              overlay_id = manifest["id"]
+              base_url = f"https://raw.githubusercontent.com/${{ github.repository }}/main/overlays"
+              overlay_dir = os.path.dirname(manifest_path)
+
+              # Compute actual total size from files on disk
+              assets = manifest.get("assets", [])
+              computed_size = 0
+              for asset in assets:
+                  asset_path = os.path.join(overlay_dir, asset)
+                  if os.path.isfile(asset_path):
+                      computed_size += os.path.getsize(asset_path)
+
+              entry = {
+                  "id": overlay_id,
+                  "displayName": manifest.get("displayName", overlay_id),
+                  "author": manifest.get("author", "Unknown"),
+                  "description": manifest.get("description", ""),
+                  "overlayVersion": manifest.get("overlayVersion", "1.0.0"),
+                  "tags": manifest.get("tags", []),
+                  "previewUrl": f"{base_url}/{overlay_id}/{manifest.get('previewImage', 'preview.png')}",
+                  "overlayBaseUrl": base_url,
+                  "overlayPath": overlay_id,
+                  "sizeBytes": computed_size,
+                  "sha256": manifest.get("sha256", {}).get("overlay.json", ""),
+                  "createdAt": manifest.get("createdAt", ""),
+                  "updatedAt": manifest.get("updatedAt", "")
+              }
+              overlays.append(entry)
+
+          catalog = {
+              "schemaVersion": 1,
+              "generatedAt": datetime.now(timezone.utc).isoformat(),
+              "overlays": overlays
+          }
+
+          with open("catalog.json", "w") as f:
+              json.dump(catalog, f, indent=2)
+              f.write("\n")
+
+          print(f"Generated catalog with {len(overlays)} overlays")
+          PYEOF
+
+      - name: Commit catalog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add catalog.json
+          git diff --staged --quiet || git commit -m "chore: update catalog.json [skip ci]"
+          git push

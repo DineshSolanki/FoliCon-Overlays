@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FoliCon Overlay Manifest",
+  "description": "Per-overlay manifest.json stored alongside overlay files in the FoliCon-Overlays repository.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "displayName", "author", "overlayVersion", "assets", "sha256"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1,
+      "description": "Manifest schema version. Currently 1."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+      "minLength": 2,
+      "maxLength": 50,
+      "description": "Unique overlay identifier. Must match folder name."
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Human-readable overlay name."
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Overlay author name or GitHub username."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Brief description of the overlay."
+    },
+    "overlayVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version (e.g. '1.0.0'). Used for update detection."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "maxLength": 30 },
+      "maxItems": 10,
+      "description": "Category tags for filtering in the store."
+    },
+    "previewImage": {
+      "type": "string",
+      "description": "Relative path to preview image within the overlay folder."
+    },
+    "assets": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "All files in the overlay package. Must include 'overlay.json'."
+    },
+    "sha256": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+      "description": "Per-file SHA256 hashes (hex-encoded, 64 chars). Key is filename."
+    },
+    "sizeBytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 5242880,
+      "description": "Total download size in bytes. Max 5MB."
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 creation timestamp."
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 last update timestamp."
+    }
+  },
+  "additionalProperties": false
+}

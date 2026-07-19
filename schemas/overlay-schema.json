@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://folicon.dev/schemas/overlay.json/v1",
+  "title": "FoliCon Overlay Definition",
+  "description": "Schema for overlay.json files used by FoliCon's icon overlay plugin system.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "displayName", "author", "overlayVersion", "poster", "rating", "title"],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Schema version. App ignores overlays with schemaVersion > appSupportedSchemaVersion."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$",
+      "description": "Unique overlay identifier. Lowercase alphanumeric with hyphens. Built-in IDs (legacy, alternate, liaher, faelpessoal, faelpessoal-horizontal, windows11) are reserved."
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable display name."
+    },
+    "author": {
+      "type": "string",
+      "description": "Creator name."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the overlay."
+    },
+    "overlayVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of this overlay package (e.g. '1.0.0')."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Searchable tags."
+    },
+    "designWidth": {
+      "type": "number",
+      "default": 265,
+      "description": "Design surface width in device-independent pixels."
+    },
+    "designHeight": {
+      "type": "number",
+      "default": 256,
+      "description": "Design surface height in device-independent pixels."
+    },
+    "rootMargin": {
+      "type": "string",
+      "default": "0,0,0,-11",
+      "description": "WPF Thickness string applied to the root Grid (left,top,right,bottom)."
+    },
+    "renderWidth": {
+      "type": "number",
+      "default": 256,
+      "description": "Final rendered bitmap width in pixels."
+    },
+    "renderHeight": {
+      "type": "number",
+      "default": 256,
+      "description": "Final rendered bitmap height in pixels."
+    },
+    "layerOrder": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["base", "poster", "front", "rating", "title"]
+      },
+      "description": "Explicit z-order of children in the root Grid. Defaults to [\"base\",\"poster\",\"front\",\"rating\",\"title\"] if null."
+    },
+    "baseLayer": {
+      "$ref": "#/$defs/layerDefinition",
+      "description": "Background frame layer (optional)."
+    },
+    "frontLayer": {
+      "$ref": "#/$defs/layerDefinition",
+      "description": "Foreground overlay layer (optional)."
+    },
+    "poster": {
+      "$ref": "#/$defs/posterConfig"
+    },
+    "rating": {
+      "$ref": "#/$defs/ratingConfig"
+    },
+    "title": {
+      "$ref": "#/$defs/titleConfig"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "layerDefinition": {
+      "type": ["object", "null"],
+      "required": ["imagePath", "margin"],
+      "properties": {
+        "imagePath": {
+          "type": "string",
+          "description": "Relative path to the image file within the overlay folder."
+        },
+        "margin": {
+          "type": "string",
+          "description": "WPF Thickness string: 'left,top,right,bottom'. Supports negative values."
+        }
+      },
+      "additionalProperties": false
+    },
+    "posterConfig": {
+      "type": "object",
+      "required": ["margin"],
+      "properties": {
+        "margin": {
+          "type": "string",
+          "description": "WPF Thickness string for poster image margin."
+        },
+        "clipRadius": {
+          "type": "string",
+          "default": "0",
+          "description": "CornerRadius: single value or 'tl,tr,br,bl'. '0' means no clipping."
+        },
+        "clipRect": {
+          "type": ["string", "null"],
+          "description": "Explicit clip rectangle as 'x,y,width,height'. Overrides calculated clip from margin."
+        },
+        "posterInnerMargin": {
+          "type": ["string", "null"],
+          "description": "WPF Thickness for the Image inside the Border (when clip/mask is active)."
+        },
+        "opacityMaskPath": {
+          "type": ["string", "null"],
+          "description": "Relative path to an opacity mask image within the overlay folder."
+        }
+      },
+      "additionalProperties": false
+    },
+    "ratingConfig": {
+      "type": "object",
+      "properties": {
+        "shieldMargin": {
+          "type": "string",
+          "default": "160,97,6,5"
+        },
+        "textMargin": {
+          "type": "string",
+          "default": "189,30,21,24"
+        },
+        "fontSize": {
+          "type": "number",
+          "default": 25,
+          "minimum": 1
+        },
+        "fontFamily": {
+          "type": "string",
+          "default": "Castellar"
+        },
+        "fontSource": {
+          "type": ["string", "null"],
+          "description": "Optional path to a bundled .ttf/.otf font file within the overlay folder."
+        },
+        "fontFallback": {
+          "type": "string",
+          "default": "Segoe UI"
+        },
+        "textWidth": {
+          "type": "number",
+          "default": 55
+        },
+        "textHeight": {
+          "type": "number",
+          "default": 46
+        },
+        "textHorizontalAlignment": {
+          "type": "string",
+          "default": "Center",
+          "enum": ["Left", "Center", "Right", "Stretch"]
+        },
+        "textVerticalAlignment": {
+          "type": "string",
+          "default": "Center",
+          "enum": ["Top", "Center", "Bottom", "Stretch"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "titleConfig": {
+      "type": "object",
+      "properties": {
+        "isVisible": {
+          "type": "boolean",
+          "default": false
+        },
+        "margin": {
+          "type": "string",
+          "default": "0,0,0,0"
+        },
+        "rotationAngle": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 360
+        },
+        "rotationOrigin": {
+          "type": "string",
+          "default": "0.5,0.5",
+          "pattern": "^\\d+\\.\\d+,\\d+\\.\\d+$",
+          "description": "Normalized rotation origin point 'x,y' (0.0-1.0)."
+        },
+        "fontFamily": {
+          "type": "string",
+          "default": "Cormorant"
+        },
+        "fontSource": {
+          "type": ["string", "null"],
+          "description": "Optional path to a bundled .ttf/.otf font file within the overlay folder."
+        },
+        "fontFallback": {
+          "type": "string",
+          "default": "Segoe UI"
+        },
+        "foreground": {
+          "type": "string",
+          "default": "White",
+          "description": "Text foreground color (WPF color name or hex)."
+        },
+        "trimming": {
+          "type": "string",
+          "default": "WordEllipsis",
+          "enum": ["None", "WordEllipsis", "CharacterEllipsis"]
+        },
+        "wrapping": {
+          "type": "string",
+          "default": "Wrap",
+          "enum": ["NoWrap", "Wrap", "WrapWithOverflow"]
+        },
+        "container": {
+          "type": "string",
+          "default": "Root",
+          "enum": ["Root", "RatingGrid"],
+          "description": "Visual container for the title. 'Root' places it in the root Grid; 'RatingGrid' places it inside the rating Grid."
+        },
+        "gridRow": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "description": "Grid row used when container is 'RatingGrid'."
+        },
+        "horizontalAlignment": {
+          "type": "string",
+          "default": "Left",
+          "enum": ["Left", "Center", "Right", "Stretch"]
+        },
+        "verticalAlignment": {
+          "type": "string",
+          "default": "Top",
+          "enum": ["Top", "Center", "Bottom", "Stretch"]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
