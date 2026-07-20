@@ -18,8 +18,15 @@ jobs:
         run: |
           echo "Generating catalog from overlay manifests..."
           python3 - <<'PYEOF'
-          import json, os, glob
+          import json, os, glob, hashlib
           from datetime import datetime, timezone
+
+          def get_sha256(filepath):
+              sha256_hash = hashlib.sha256()
+              with open(filepath, "rb") as f:
+                  for byte_block in iter(lambda: f.read(4096), b""):
+                      sha256_hash.update(byte_block)
+              return sha256_hash.hexdigest()
 
           overlays = []
           for manifest_path in sorted(glob.glob("overlays/*/manifest.json")):
@@ -30,13 +37,34 @@ jobs:
               base_url = f"https://raw.githubusercontent.com/${{ github.repository }}/main/overlays"
               overlay_dir = os.path.dirname(manifest_path)
 
-              # Compute actual total size from files on disk
+              # Compute actual total size and verify/update hashes
               assets = manifest.get("assets", [])
               computed_size = 0
+              manifest_hashes = manifest.get("sha256", {})
+              manifest_changed = False
+
               for asset in assets:
                   asset_path = os.path.join(overlay_dir, asset)
                   if os.path.isfile(asset_path):
                       computed_size += os.path.getsize(asset_path)
+
+                      # Calculate actual hash
+                      actual_hash = get_sha256(asset_path)
+                      expected_hash = manifest_hashes.get(asset)
+
+                      if actual_hash != expected_hash:
+                          print(f"  [FIX] Hash mismatch for {overlay_id}/{asset}: expected {expected_hash}, got {actual_hash}")
+                          manifest_hashes[asset] = actual_hash
+                          manifest_changed = True
+
+              if manifest_changed:
+                  manifest["sha256"] = manifest_hashes
+                  manifest["sizeBytes"] = computed_size
+                  manifest["updatedAt"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+                  with open(manifest_path, "w") as f:
+                      json.dump(manifest, f, indent=2)
+                      f.write("\n")
+                  print(f"  Updated manifest.json for {overlay_id}")
 
               entry = {
                   "id": overlay_id,
@@ -49,7 +77,7 @@ jobs:
                   "overlayBaseUrl": base_url,
                   "overlayPath": overlay_id,
                   "sizeBytes": computed_size,
-                  "sha256": manifest.get("sha256", {}).get("overlay.json", ""),
+                  "sha256": manifest_hashes.get("overlay.json", ""),
                   "createdAt": manifest.get("createdAt", ""),
                   "updatedAt": manifest.get("updatedAt", "")
               }
@@ -68,10 +96,10 @@ jobs:
           print(f"Generated catalog with {len(overlays)} overlays")
           PYEOF
 
-      - name: Commit catalog
+      - name: Commit catalog and updated manifests
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add catalog.json
-          git diff --staged --quiet || git commit -m "chore: update catalog.json [skip ci]"
+          git add catalog.json overlays/*/manifest.json
+          git diff --staged --quiet || git commit -m "chore: update catalog.json and manifests [skip ci]"
           git push
