@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-19T19:28:16.474026+00:00",
+  "generatedAt": "2026-07-25T17:54:44.001712+00:00",
   "overlays": [
     {
       "id": "example-dvd-case",
@@ -17,9 +17,9 @@
       "overlayBaseUrl": "https://raw.githubusercontent.com/DineshSolanki/FoliCon-Overlays/main/overlays",
       "overlayPath": "example-dvd-case",
       "sizeBytes": 118667,
-      "sha256": "8a05d2ae6c86aeefaee22348f47d02280ac58da42e2326cef70d2ac4a6c3293e",
+      "sha256": "25bc42eba25a4eb4957e2e066b5d3c1386998df7704906982a34d4ecaeac8f55",
       "createdAt": "2026-07-19T00:00:00Z",
-      "updatedAt": "2026-07-19T00:00:00Z"
+      "updatedAt": "2026-07-25T17:54:44.001507Z"
     }
   ]
 }
