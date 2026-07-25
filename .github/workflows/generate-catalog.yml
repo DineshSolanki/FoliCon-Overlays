@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'overlays/**'
+  workflow_dispatch:
 
 jobs:
   generate-catalog:
