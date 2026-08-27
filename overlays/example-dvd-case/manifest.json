@@ -18,12 +18,12 @@
     "preview.png"
   ],
   "sha256": {
-    "overlay.json": "25bc42eba25a4eb4957e2e066b5d3c1386998df7704906982a34d4ecaeac8f55",
+    "overlay.json": "144544fcf6fe376497be89fb6875f75660431c9ddea45efb1ea594d9880ba232",
     "base.png": "d2b7c312ed8cffd6a2fd8f99ecf83032096a9974dfdb8245be544b431014d571",
     "front.png": "0cc55dbd2903e0654614e3ec6b552e986986ed07866f3fed81ac55dc998a4ff0",
     "preview.png": "fc917faf9b8ec3854bf9f87e13b5b2edbe75ec34938fb219f599cc1f886f3b8e"
   },
-  "sizeBytes": 118667,
+  "sizeBytes": 118696,
   "createdAt": "2026-07-19T00:00:00Z",
-  "updatedAt": "2026-07-25T17:54:44.001507Z"
+  "updatedAt": "2026-08-27T19:39:10.362410Z"
 }
