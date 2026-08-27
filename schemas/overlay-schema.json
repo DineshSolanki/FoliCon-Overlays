@@ -165,11 +165,13 @@
         },
         "textWidth": {
           "type": "number",
-          "default": 55
+          "default": 55,
+          "description": "Maximum width of the rating text area. Text scales down to fit if wider (e.g. double-digit ratings)."
         },
         "textHeight": {
           "type": "number",
-          "default": 46
+          "default": 46,
+          "description": "Maximum height of the rating text area. Text scales down to fit if taller."
         },
         "textHorizontalAlignment": {
           "type": "string",
@@ -180,6 +182,12 @@
           "type": "string",
           "default": "Center",
           "enum": ["Top", "Center", "Bottom", "Stretch"]
+        },
+        "textAnchor": {
+          "type": ["string", "null"],
+          "default": null,
+          "enum": ["Center", null],
+          "description": "When 'Center', the rating text is co-located with the shield and auto-centered on it. textMargin becomes an offset from the shield center. When null, text is positioned independently via textMargin."
         }
       },
       "additionalProperties": false
