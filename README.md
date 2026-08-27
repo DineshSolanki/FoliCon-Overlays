@@ -19,6 +19,8 @@ Quick version:
 5. Create a `preview.png` (256x256 PNG) showing how the overlay looks
 6. Submit a Pull Request
 
+Before submitting, use your exact GitHub username as `author` in both JSON files and attach screenshots of the icon with and without the rating badge. Automated PR validation rejects ownership mismatches and obscene or NSFW text in overlay JSON.
+
 ## Validation Limits
 
 - **Image size**: max 2MB per image

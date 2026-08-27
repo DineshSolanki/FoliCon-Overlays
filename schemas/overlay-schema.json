@@ -23,7 +23,8 @@
     },
     "author": {
       "type": "string",
-      "description": "Creator name."
+      "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$",
+      "description": "GitHub username of the overlay creator. Must match manifest.json."
     },
     "description": {
       "type": "string",

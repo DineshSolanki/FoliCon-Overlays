@@ -826,12 +826,23 @@ sha256sum overlay.json base.png front.png preview.png
 6. The GitHub Action automatically generates `catalog.json` from your manifest
 7. Once merged, your overlay appears in FoliCon's Overlay Store for all users
 
+### Authenticity and content requirements
+
+- Set `author` in both JSON files to your exact GitHub username. New overlays are checked against the GitHub account that opened the PR.
+- Existing overlay ownership cannot be transferred through a regular contributor PR. The original author or repository owner must submit updates.
+- Do not include obscene or NSFW text in any field or comment in `overlay.json` or `manifest.json`. Automated validation checks the complete JSON text.
+- Attach screenshots showing the created icon with a representative poster both **without** and **with** the rating badge.
+
 ### PR checklist
 
 - [ ] Folder name matches `id` in both JSON files
+- [ ] `author` in both JSON files matches your GitHub username
 - [ ] `overlay.json` passes validation (all referenced images exist)
 - [ ] `manifest.json` has correct SHA256 hashes for every asset
 - [ ] `preview.png` is 256×256 and shows how the overlay looks
+- [ ] PR description includes a screenshot without the rating badge
+- [ ] PR description includes a screenshot with the rating badge
+- [ ] No obscene or NSFW text appears in any JSON field or comment
 - [ ] Total package size is under 5 MB
 - [ ] No single image exceeds 2 MB
 - [ ] Tested locally in FoliCon before submitting

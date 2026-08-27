@@ -1,0 +1,148 @@
+name: Validate Overlay PR
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'overlays/**'
+      - 'schemas/**'
+      - 'CREATING-OVERLAYS.md'
+      - 'README.md'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate-overlay:
+    runs-on: ubuntu-latest
+        env:
+            BASE_SHA: ${{ github.event.pull_request.base.sha }}
+            HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate overlay ownership and text content
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          python3 - <<'PYEOF'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          pr_author = os.environ.get("PR_AUTHOR", "").casefold()
+          repository_owner = os.environ["REPOSITORY_OWNER"].casefold()
+          base_sha = os.environ["BASE_SHA"]
+          head_sha = os.environ["HEAD_SHA"]
+
+          changed_files = subprocess.check_output(
+              ["git", "diff", "--name-only", f"{base_sha}...{head_sha}", "--", "overlays/"],
+              text=True,
+          ).splitlines()
+          overlay_dirs = sorted({Path(path).parent for path in changed_files if path.endswith(".json")})
+          if not overlay_dirs:
+              print("No overlay JSON files changed.")
+              raise SystemExit(0)
+
+          errors = []
+          for overlay_dir in overlay_dirs:
+              manifest_path = overlay_dir / "manifest.json"
+              overlay_path = overlay_dir / "overlay.json"
+              if not manifest_path.is_file() or not overlay_path.is_file():
+                  errors.append(f"{overlay_dir}: both manifest.json and overlay.json are required")
+                  continue
+
+              try:
+                  manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                  overlay = json.loads(overlay_path.read_text(encoding="utf-8"))
+              except json.JSONDecodeError as exc:
+                  errors.append(f"{overlay_dir}: invalid JSON: {exc}")
+                  continue
+
+              manifest_author = str(manifest.get("author", "")).casefold()
+              overlay_author = str(overlay.get("author", "")).casefold()
+              if manifest_author != overlay_author:
+                  errors.append(f"{overlay_dir}: author must match in manifest.json and overlay.json")
+
+              base_manifest = None
+              base_manifest_text = None
+              try:
+                  base_manifest_text = subprocess.check_output(
+                      ["git", "show", f"{base_sha}:{manifest_path.as_posix()}"], text=True
+                  )
+                  base_manifest = json.loads(base_manifest_text)
+              except (subprocess.CalledProcessError, json.JSONDecodeError):
+                  pass
+
+              if base_manifest is None:
+                  if manifest_author != pr_author:
+                      errors.append(
+                          f"{overlay_dir}: new overlay author '{manifest.get('author', '')}' "
+                          f"must match PR author '{os.environ.get('PR_AUTHOR', '')}'"
+                      )
+              else:
+                  original_author = str(base_manifest.get("author", "")).casefold()
+                  if manifest_author != original_author and pr_author != repository_owner:
+                      errors.append(
+                          f"{overlay_dir}: existing overlay ownership cannot be changed by this PR"
+                      )
+                  if pr_author != original_author and pr_author != repository_owner:
+                      errors.append(
+                          f"{overlay_dir}: updates must be submitted by '{base_manifest.get('author', '')}' "
+                          "or the repository owner"
+                      )
+
+          if errors:
+              print("Overlay PR validation failed:")
+              print("\n".join(f"- {error}" for error in errors))
+              raise SystemExit(1)
+
+          print(f"Validated {len(overlay_dirs)} overlay director{'y' if len(overlay_dirs) == 1 else 'ies'}.")
+          PYEOF
+
+            - name: Scan overlay text for obscene or NSFW content
+                run: |
+                    npm install --no-save --ignore-scripts bad-words@4.1.5
+                    node --input-type=module <<'NODE'
+                    import { Filter } from "bad-words";
+                    import fs from "node:fs";
+                    import path from "node:path";
+                    import { execFileSync } from "node:child_process";
+
+                    const filter = new Filter();
+                    const baseSha = process.env.BASE_SHA || "";
+                    const headSha = process.env.HEAD_SHA || "";
+                    const changedFiles = execFileSync(
+                        "git",
+                        ["diff", "--name-only", `${baseSha}...${headSha}`, "--", "overlays/"],
+                        { encoding: "utf8" },
+                    ).trim().split(/\r?\n/).filter(Boolean);
+                    const overlayDirs = [...new Set(
+                        changedFiles
+                            .filter((file) => file.endsWith(".json"))
+                            .map((file) => path.dirname(file)),
+                    )];
+                    const findings = [];
+
+                    for (const directory of overlayDirs) {
+                        for (const filename of ["manifest.json", "overlay.json"]) {
+                            const filePath = path.join(directory, filename);
+                            const text = fs.readFileSync(filePath, "utf8");
+                            if (filter.clean(text) !== text) {
+                                findings.push(`${filePath}: prohibited or NSFW text detected`);
+                            }
+                        }
+                    }
+
+                    if (findings.length > 0) {
+                        console.error("Overlay text moderation failed:");
+                        console.error(findings.map((finding) => `- ${finding}`).join("\n"));
+                        process.exit(1);
+                    }
+                    console.log(`Moderated ${overlayDirs.length} overlay director${overlayDirs.length === 1 ? "y" : "ies"}.`);
+                    NODE
