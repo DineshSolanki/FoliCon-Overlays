@@ -1,25 +1,25 @@
 {
-    "schemaVersion": 1,
-    "generatedAt": "2026-08-28T09:55:03.6610083Z",
-    "overlays": [
-        {
-            "id": "doraemon-dream-pocket",
-            "displayName": "Doraemon Dream Pocket",
-            "author": "solan",
-            "description": "A Doraemon-inspired pocket frame for poster icons.",
-            "overlayVersion": "1.0.0",
-            "tags": [
-                "doraemon",
-                "pocket",
-                "custom"
-            ],
-            "previewUrl": "https://raw.githubusercontent.com/DineshSolanki/FoliCon-Overlays/main/overlays/doraemon-dream-pocket/preview.png",
-            "overlayBaseUrl": "https://raw.githubusercontent.com/DineshSolanki/FoliCon-Overlays/main/overlays",
-            "overlayPath": "doraemon-dream-pocket",
-            "sizeBytes": 1997637,
-            "sha256": "b483b3a02f64aa0d6ad893c18b681c38159f1361f5fe25cef401da437120c3ae",
-            "createdAt": "2026-08-26T11:26:22.0000000Z",
-            "updatedAt": "2026-08-26T11:26:22.0000000Z"
-        }
-    ]
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-28T10:00:47.796904+00:00",
+  "overlays": [
+    {
+      "id": "doraemon-dream-pocket",
+      "displayName": "Doraemon Dream Pocket",
+      "author": "DineshSolanki",
+      "description": "A Doraemon-inspired pocket frame for poster icons.",
+      "overlayVersion": "1.0.0",
+      "tags": [
+        "doraemon",
+        "pocket",
+        "custom"
+      ],
+      "previewUrl": "https://raw.githubusercontent.com/DineshSolanki/FoliCon-Overlays/main/overlays/doraemon-dream-pocket/preview.png",
+      "overlayBaseUrl": "https://raw.githubusercontent.com/DineshSolanki/FoliCon-Overlays/main/overlays",
+      "overlayPath": "doraemon-dream-pocket",
+      "sizeBytes": 1997586,
+      "sha256": "47bbea354ceaae74abfcb2939da2bd2c15f450fd836dbe66c149122f3ffdcddd",
+      "createdAt": "2026-08-26T11:26:22.0000000Z",
+      "updatedAt": "2026-08-28T10:00:47.796716Z"
+    }
+  ]
 }
