@@ -6,6 +6,16 @@ Community overlay repository for [FoliCon](https://github.com/DineshSolanki/Foli
 
 Overlays define custom poster icon styles — mockup frames, rating badges, title text, and layer compositions. FoliCon's Overlay Store lets you browse and install overlays from this repository with one click.
 
+## Overlay Gallery
+
+Newest overlays first. 🆕 marks overlays added in the last 30 days. This table is auto-generated from `catalog.json` — do not edit it manually.
+
+<!-- OVERLAY_GALLERY:START -->
+| Preview | Overlay | Author | Version | Tags |
+|---|---|---|---|---|
+| <img src="https://raw.githubusercontent.com/DineshSolanki/FoliCon-Overlays/main/overlays/doraemon-dream-pocket/preview.png" width="80" alt="Doraemon Dream Pocket"> | **Doraemon Dream Pocket** 🆕 | [DineshSolanki](https://github.com/DineshSolanki) | 1.0.0 | doraemon, pocket, custom |
+<!-- OVERLAY_GALLERY:END -->
+
 ## Creating an Overlay
 
 **📖 Read the full guide: [Creating Overlays](CREATING-OVERLAYS.md)** — everything you need to design, build, and submit an overlay.

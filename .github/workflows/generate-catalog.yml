@@ -84,9 +84,11 @@ jobs:
               }
               overlays.append(entry)
 
+          generated_at = datetime.now(timezone.utc)
+
           catalog = {
               "schemaVersion": 1,
-              "generatedAt": datetime.now(timezone.utc).isoformat(),
+              "generatedAt": generated_at.isoformat(),
               "overlays": overlays
           }
 
@@ -95,12 +97,49 @@ jobs:
               f.write("\n")
 
           print(f"Generated catalog with {len(overlays)} overlays")
+
+          # Regenerate the README gallery table, newest overlays first
+          def parse_date(value):
+              if not value:
+                  return datetime.min.replace(tzinfo=timezone.utc)
+              return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+          sorted_overlays = sorted(overlays, key=lambda o: parse_date(o.get("createdAt")), reverse=True)
+
+          rows = []
+          for o in sorted_overlays:
+              is_new = (generated_at - parse_date(o.get("createdAt"))).days < 30
+              badge = " 🆕" if is_new else ""
+              tags = ", ".join(o.get("tags", []))
+              rows.append(
+                  f"| <img src=\"{o['previewUrl']}\" width=\"80\" alt=\"{o['displayName']}\"> "
+                  f"| **{o['displayName']}**{badge} "
+                  f"| [{o['author']}](https://github.com/{o['author']}) "
+                  f"| {o['overlayVersion']} "
+                  f"| {tags} |"
+              )
+
+          table = "| Preview | Overlay | Author | Version | Tags |\n|---|---|---|---|---|\n" + "\n".join(rows)
+
+          with open("README.md") as f:
+              readme = f.read()
+
+          start_marker = "<!-- OVERLAY_GALLERY:START -->"
+          end_marker = "<!-- OVERLAY_GALLERY:END -->"
+          start = readme.index(start_marker) + len(start_marker)
+          end = readme.index(end_marker)
+          readme = readme[:start] + "\n" + table + "\n" + readme[end:]
+
+          with open("README.md", "w") as f:
+              f.write(readme)
+
+          print("Updated README gallery table")
           PYEOF
 
       - name: Commit catalog and updated manifests
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add catalog.json overlays/*/manifest.json
-          git diff --staged --quiet || git commit -m "chore: update catalog.json and manifests [skip ci]"
+          git add catalog.json overlays/*/manifest.json README.md
+          git diff --staged --quiet || git commit -m "chore: update catalog.json, manifests, and gallery [skip ci]"
           git push
