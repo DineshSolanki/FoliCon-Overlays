@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "doraemon-dream-pocket",
+  "displayName": "Doraemon Dream Pocket",
+  "author": "DineshSolanki",
+  "description": "A Doraemon-inspired pocket frame for poster icons.",
+  "overlayVersion": "1.0.0",
+  "tags": ["doraemon", "pocket", "custom"],
+  "designWidth": 265.0,
+  "designHeight": 256.0,
+  "rootMargin": "0,0,0,-11",
+  "renderWidth": 256.0,
+  "renderHeight": 256.0,
+  "baseLayer": {
+    "imagePath": "base.png",
+    "margin": "0,0,0,0"
+  },
+  "frontLayer": null,
+  "layerOrder": [
+    "poster",
+    "base",
+    "rating"
+  ],
+  "poster": {
+    "margin": "74,40,77,50",
+    "clipRadius": "0",
+    "clipRect": null,
+    "posterInnerMargin": null,
+    "opacityMaskPath": null
+  },
+  "rating": {
+    "shieldMargin": "203,194,5,4",
+    "textMargin": "213,204,16,14",
+    "fontSize": 25.0,
+    "fontFamily": "Castellar",
+    "fontSource": null,
+    "fontFallback": "Segoe UI",
+    "textWidth": 55.0,
+    "textHeight": 46.0,
+    "textHorizontalAlignment": "Center",
+    "textVerticalAlignment": "Center"
+  },
+  "title": {
+    "isVisible": false,
+    "margin": "0,0,0,0",
+    "rotationAngle": 0.0,
+    "rotationOrigin": "0.5,0.5",
+    "fontFamily": "Cormorant",
+    "fontSource": null,
+    "fontFallback": "Segoe UI",
+    "foreground": "White",
+    "trimming": "WordEllipsis",
+    "wrapping": "Wrap",
+    "container": "Root",
+    "gridRow": 0,
+    "horizontalAlignment": "Left",
+    "verticalAlignment": "Top"
+  }
+}

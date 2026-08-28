@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "doraemon-dream-pocket",
+  "displayName": "Doraemon Dream Pocket",
+  "author": "DineshSolanki",
+  "description": "A Doraemon-inspired pocket frame for poster icons.",
+  "overlayVersion": "1.0.0",
+  "tags": [
+    "doraemon",
+    "pocket",
+    "custom"
+  ],
+  "previewImage": "preview.png",
+  "assets": [
+    "overlay.json",
+    "base.png",
+    "preview.png"
+  ],
+  "sha256": {
+    "base.png": "8dcf4ca5392b522f93eb814cac045d6fb20812eca34f6245f2007959786e6f03",
+    "overlay.json": "b483b3a02f64aa0d6ad893c18b681c38159f1361f5fe25cef401da437120c3ae",
+    "preview.png": "535d7cd0761b1d42790192cbf835f5b9e31be6eac4f8b72ee73ddc42f3eb575b"
+  },
+  "sizeBytes": 1997563,
+  "createdAt": "2026-08-26T11:26:22.0000000Z",
+  "updatedAt": "2026-08-26T11:26:22.0000000Z"
+}
