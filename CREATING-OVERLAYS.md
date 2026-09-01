@@ -612,7 +612,7 @@ When you submit an overlay, FoliCon validates it automatically:
 | `overlay 'id' contains invalid characters` | Use only `a-z`, `0-9`, and `-` |
 | `baseLayer.imagePath 'x.png' file not found` | Check the filename matches exactly (case-sensitive on Linux) |
 | `poster.margin is not a valid Thickness string` | Use `"left,top,right,bottom"` format with numbers only |
-| `Overlay folder exceeds maximum total size` | Compress your PNGs. Use tools like [pngquant](https://pngquant.org/) or [TinyPNG](https://tinypng.com/) |
+| `Overlay folder exceeds maximum total size` | Compress your PNGs. Use tools like [pngquant](https://pngquant.org/) or [TinyPNG](https://tinypng.com/) [Compressor.io](https://compressor.io/), try lossless |
 
 ---
 
